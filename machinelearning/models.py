@@ -54,10 +54,8 @@ class PerceptronModel(object):
         """
         "*** YOUR CODE HERE ***"
         #cambiar los np.asscalar a np.ndarray.item (en nn.y linea 392, y en autograder.py linea 338)
-        
-        
-        notConverge=True
 
+        notConverge=True
         while notConverge:
             notConverge=False
             for x,y in dataset.iterate_once(1):
@@ -67,18 +65,6 @@ class PerceptronModel(object):
                     notConverge=True
                     self.w.update(x,label)
         
-        """ V1 2/6
-        notConverge=True
-
-        while notConverge:
-            notConverge=False
-            for x,y in dataset.iterate_once(1):
-                output=self.get_prediction(x)
-
-                if output!=y:
-                    notConverge=True
-                    self.w.update(x,y)
-        """
 
 
 
@@ -92,17 +78,7 @@ class RegressionModel(object):
     SI ME DAN X TENGO QUE APRENDER A OBTENER LA MISMA Y QUE EN LA FUNCION ORIGINAL DE LA QUE QUIERO APRENDER
     """
     def __init__(self):
-        # Initialize your model parameters here
-        # For example:
-        # self.batch_size = 20
-        # self.w0 = nn.Parameter(1, 15)
-        # self.b0 = nn.Parameter(1, 15)
-        # self.w1 = nn.Parameter(15, 10)
-        # self.b1 = nn.Parameter(1, 10)
-        # self.w2 = nn.Parameter(10, 1)
-        # self.b2 = nn.Parameter(1, 1)
-        # self.lr = -0.01
-        #
+
         "*** YOUR CODE HERE ***"            # CON ESTOS PARAMETROS LOSS=0.018129
         salida_tamaño=1         
         entrada_tamaño=1        
@@ -141,7 +117,7 @@ class RegressionModel(object):
         "*** YOUR CODE HERE ***"
         
         # capa de entrada
-        entrada = nn.Linear(x, self.layers[0])          # X*W0 (cuando numero_ocultas=1)
+        entrada = nn.Linear(x, self.layers[0])          # X*W0 (con 1 capa oculta)
         entrada = nn.AddBias(entrada, self.layers[1])   # (X*W0)+B0
         
         # Capas ocultas
@@ -265,18 +241,18 @@ class DigitClassificationModel(object):
         """
         "*** YOUR CODE HERE ***"                
         # capa de entrada
-        entrada = nn.Linear(x, self.layers[0])          # X*W0 (cuando numero_ocultas=1)
-        entrada = nn.AddBias(entrada, self.layers[1])   # (X*W0)+B0
+        entrada = nn.Linear(x, self.layers[0])          
+        entrada = nn.AddBias(entrada, self.layers[1])  
         
         # Capas ocultas
         for i in range(2, len(self.layers)-2, 2):
-            oculta = nn.Linear(nn.ReLU(entrada), self.layers[i]) # relu(X*W0+B0)*W1  
-            oculta = nn.AddBias(oculta, self.layers[i + 1])      # relu(X*W0+B0)*W1+B1
+            oculta = nn.Linear(nn.ReLU(entrada), self.layers[i])  
+            oculta = nn.AddBias(oculta, self.layers[i + 1])      
             entrada = oculta
 
         # Capa de salida
-        salida = nn.Linear(nn.ReLU(entrada), self.layers[-2])      # relu(relu(X*W0+B0)*W1+B1)*W2
-        salida = nn.AddBias(salida, self.layers[-1])               # relu(relu(X*W0+B0)*W1+B1)*W2+B2
+        salida = nn.Linear(nn.ReLU(entrada), self.layers[-2])      
+        salida = nn.AddBias(salida, self.layers[-1])               
 
         return salida
 
@@ -314,9 +290,7 @@ class DigitClassificationModel(object):
         NO LO TENEIS QUE IMPLEMENTAR, PERO SABED QUE EMPLEA EL RESULTADO DEL SOFTMAX PARA CALCULAR
         EL NUM DE EJEMPLOS DEL TRAIN QUE SE HAN CLASIFICADO CORRECTAMENTE 
         """
-        still_learning = True
-        cycles = 10
-        count = 0
+
         while dataset.get_validation_accuracy() < 0.975:
             for x, y in dataset.iterate_once(self.batch_size):
                 prediction=self.run(x)
@@ -327,6 +301,8 @@ class DigitClassificationModel(object):
                     for i in range(0, len(self.layers), 2):
                         self.layers[i].update(grad[i], self.lr)
                         self.layers[i + 1].update(grad[i + 1], self.lr)
+
+
 
 
 
